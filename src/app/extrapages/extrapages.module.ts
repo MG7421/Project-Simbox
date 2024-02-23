@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CarouselModule } from 'ngx-owl-carousel-o';
-import { NgOtpInputModule } from  'ng-otp-input';
 
 import { ExtrapagesRoutingModule } from './extrapages-routing.module';
 
@@ -18,6 +17,9 @@ import { Verification2Component } from './verification2/verification2.component'
 import { SteptwoverificationComponent } from './steptwoverification/steptwoverification.component';
 import { Steptwoverification2Component } from './steptwoverification2/steptwoverification2.component';
 import { ComingsoonComponent } from './comingsoon/comingsoon.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgOtpInputModule } from 'ng-otp-input';
+
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
@@ -26,7 +28,11 @@ import { ComingsoonComponent } from './comingsoon/comingsoon.component';
     CommonModule,
     CarouselModule,
     ExtrapagesRoutingModule,
-    NgOtpInputModule
+    NgOtpInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  providers:[
   ]
 })
 export class ExtrapagesModule { }
