@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { AuthenticationService } from '../../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+import { PopupService } from 'src/app/core/services/popup.service';
+import { Subject, takeUntil } from 'rxjs';
+import { SteptwoverificationComponent } from 'src/app/extrapages/steptwoverification/steptwoverification.component';
 
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -20,62 +20,90 @@ import { environment } from '../../../../environments/environment';
  */
 export class LoginComponent implements OnInit {
 
-  loginForm: UntypedFormGroup;
-  submitted:any = false;
-  error:any = '';
-  returnUrl: string;
-
-  // set the currenr year
-  year: number = new Date().getFullYear();
+  loginForm: FormGroup;
+  submitted = false;
+  loading = false;
+  hidePassword = true;
+  error = '';
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
   // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
-    private authFackservice: AuthfakeauthenticationService) { }
+  constructor(   private formBuilder: FormBuilder,
+    private authService: AuthfakeauthenticationService,
+    private toastr: ToastrService,
+    private popupService: PopupService) { }
 
-  ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required]],
-    });
-
-    // reset login status
-    // this.authenticationService.logout();
-    // get return url from route parameters or default to '/'
-    // tslint:disable-next-line: no-string-literal
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-  }
-
-  // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
-
-  /**
-   * Form submit
-   */
-  onSubmit() {
-    this.submitted = true;
-
-    // stop here if form is invalid
-    if (this.loginForm.invalid) {
-      return;
-    } else {
-      if (environment.defaultauth === 'firebase') {
-        this.authenticationService.login(this.f.email.value, this.f.password.value).then((res: any) => {
-          this.router.navigate(['/dashboard']);
-        })
-          .catch(error => {
-            this.error = error ? error : '';
-          });
-      } else {
-        this.authFackservice.login(this.f.email.value, this.f.password.value)
-          .pipe(first())
-          .subscribe(
-            data => {
-              this.router.navigate(['/dashboard']);
-            },
-            error => {
-              this.error = error ? error : '';
-            });
-      }
+    ngOnInit() {
+      this.loginForm = this.formBuilder.group({
+        login: ['', Validators.required],
+        password: ['', Validators.required],
+        isLdap: [false, Validators.required]
+      });
     }
-  }
+
+
+    get f() {
+      return this.loginForm.controls;
+    }
+
+    togglePasswordVisibility() {
+      this.hidePassword = !this.hidePassword;
+    }
+
+    onSubmit() {
+      this.submitted = true;
+      if (this.loginForm.invalid || this.loading) {
+        return;
+      }
+
+      const userLogin = this.f['login'].value; // Utilisation de 'login' au lieu de 'email'
+      const userPassword = this.f['password'].value;
+      const isLdap = this.f['isLdap'].value;
+
+      this.loading = true;
+
+      this.authService.login(userLogin, userPassword, isLdap)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(
+          (res: any) => {
+            const modalRef = this.popupService.openComponentDialog(SteptwoverificationComponent);
+            modalRef.result.then( (result) => { if (result === 'verified') { this.handleSuccessfulLogin(res);} },
+            (reason) => { this.showErrorNotification('La vérification à deux étapes a échoué', 'Erreur'); } );
+            this.loading = false; }, (error) => {
+            console.log('error', error);
+            this.submitted = false;
+            this.loading = false;
+            this.handleError(error);
+          }
+        );
+    }
+
+    private handleSuccessfulLogin(res: any) {
+      this.showSuccessNotification(res['status']['message'], 'Succès');
+      // Autres logiques si nécessaire
+      this.loading = false;
+    }
+
+    private showSuccessNotification(message: string, title: string): void {
+      this.toastr.success(message, title);
+    }
+
+    private showErrorNotification(message: string, title: string): void {
+      this.toastr.error(message, title);
+    }
+
+    private handleError(error: any): void {
+      console.error("Une erreur s'est produite", error);
+      let errorMessage = "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      if (error.error && error.error.status && error.error.status.message) {
+        errorMessage = error.error.status.message;
+      }
+      this.showErrorNotification(errorMessage, 'Erreur');
+      this.loading = false;
+    }
+
+    ngOnDestroy() {
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
 }

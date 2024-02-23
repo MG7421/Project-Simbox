@@ -2078,6 +2078,13 @@
   "resolved" "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
   "version" "2.0.4"
 
+"@ng-bootstrap/ng-bootstrap@^16.0.0":
+  "integrity" "sha512-+FJ3e6cX9DW2t7021Ji3oz433rk3+4jLfqzU+Jyx6/vJz1dIOaML3EAY6lYuW4TLiXgMPOMvs6KzPFALGh4Lag=="
+  "resolved" "https://registry.npmjs.org/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-16.0.0.tgz"
+  "version" "16.0.0"
+  dependencies:
+    "tslib" "^2.3.0"
+
 "@ng-select/ng-select@^11.0.0":
   "integrity" "sha512-zuqZ/9LVV4nxiOFWo0hWncTqDV2QcUcUqZyMa4kKZxJALRmPumo4+BXca1h1KY6SHYFJeINIriK93LApeMSwQQ=="
   "resolved" "https://registry.npmjs.org/@ng-select/ng-select/-/ng-select-11.0.0.tgz"

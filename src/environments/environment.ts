@@ -4,17 +4,7 @@
 
 export const environment = {
   production: false,
-  defaultauth: 'fackbackend',
-  firebaseConfig: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: ''
-  }
+  apiUrl: 'https://ofidelite-web.dev02.ovh.smile.ci/api/fidelite-api/'
 };
 
 

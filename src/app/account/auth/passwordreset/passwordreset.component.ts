@@ -1,9 +1,9 @@
+// passwordreset.component.ts
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { AuthenticationService } from '../../../core/services/auth.service';
-import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr'; // Importez le service ToastrService
+import { AuthfakeauthenticationService } from 'src/app/core/services/authfake.service';
 
 @Component({
   selector: 'app-passwordreset',
@@ -11,25 +11,25 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./passwordreset.component.scss']
 })
 
-/**
- * Reset-password component
- */
 export class PasswordresetComponent implements OnInit, AfterViewInit {
 
   resetForm: UntypedFormGroup;
-  submitted:any = false;
-  error:any = '';
-  success:any = '';
-  loading:any = false;
-
-  // set the currenr year
+  submitted: any = false;
+  error: any = '';
+  success: any = '';
+  loading = false;
   year: number = new Date().getFullYear();
 
-  // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService) { }
+ // passwordreset.component.ts
+constructor(
+  private formBuilder: UntypedFormBuilder,
+  private router: Router,
+  private authService: AuthfakeauthenticationService,
+  private toastr: ToastrService,
+) {}
+
 
   ngOnInit() {
-
     this.resetForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
     });
@@ -38,25 +38,31 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  // convenience getter for easy access to form fields
   get f() { return this.resetForm.controls; }
 
-  /**
-   * On submit form
-   */
-  onSubmit() {
-    this.success = '';
-    this.submitted = true;
-
-    // stop here if form is invalid
-    if (this.resetForm.invalid) {
-      return;
-    }
-    if (environment.defaultauth === 'firebase') {
-      this.authenticationService.resetPassword(this.f.email.value)
-        .catch(error => {
-          this.error = error ? error : '';
-        });
-    }
+// passwordreset.component.ts
+onSubmit() {
+  this.success = '';
+  this.submitted = true;
+  if (this.resetForm.invalid || this.loading) {
+    console.log('invalid form');
+    return;
   }
+
+  this.loading = true; // Activez le chargement
+  this.authService.Réinitialisation().subscribe(
+    (response) => {
+      this.success = 'Un e-mail de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.';
+      this.toastr.success('Mot de passe réinitialisé avec succès', 'Succès');
+      this.loading = false; // Désactivez le chargement après une réponse réussie
+    },
+    (error) => {
+      this.error = 'Une erreur s\'est produite lors de la réinitialisation du mot de passe.';
+      this.toastr.error('Erreur lors de la réinitialisation du mot de passe', "Erreur");
+      this.loading = false; // Désactivez le chargement en cas d'erreur
+    }
+  );
+}
+
+
 }

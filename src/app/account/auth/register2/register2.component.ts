@@ -3,7 +3,6 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OwlOptions } from 'ngx-owl-carousel-o';
-import { AuthenticationService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
 import { first } from 'rxjs/operators';
 import { UserProfileService } from '../../../core/services/user.service';
@@ -20,7 +19,7 @@ export class Register2Component implements OnInit {
   error:any = '';
   successmsg:any = false;
 
-  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
+  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router,
     private userService: UserProfileService) { }
   // set the currenr year
   year: number = new Date().getFullYear();
@@ -56,33 +55,6 @@ export class Register2Component implements OnInit {
     this.submitted = true;
 
     // stop here if form is invalid
-    if (this.signupForm.invalid) {
-      return;
-    } else {
-      if (environment.defaultauth === 'firebase') {
-        this.authenticationService.register(this.f.email.value, this.f.password.value).then((res: any) => {
-          this.successmsg = true;
-          if (this.successmsg) {
-            this.router.navigate(['/dashboard']);
-          }
-        })
-          .catch(error => {
-            this.error = error ? error : '';
-          });
-      } else {
-        this.userService.register(this.signupForm.value)
-          .pipe(first())
-          .subscribe(
-            data => {
-              this.successmsg = true;
-              if (this.successmsg) {
-                this.router.navigate(['/account/login']);
-              }
-            },
-            error => {
-              this.error = error ? error : '';
-            });
-      }
-    }
+
   }
 }

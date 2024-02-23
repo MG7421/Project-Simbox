@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
-import { AuthenticationService } from '../../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
 
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
 
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login2',
@@ -20,7 +17,7 @@ import { environment } from '../../../../environments/environment';
  */
 export class Login2Component implements OnInit {
 
-  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService,
+  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router,
     private authFackservice: AuthfakeauthenticationService) { }
   loginForm: UntypedFormGroup;
   submitted:any = false;
@@ -61,27 +58,6 @@ export class Login2Component implements OnInit {
     this.submitted = true;
 
     // stop here if form is invalid
-    if (this.loginForm.invalid) {
-      return;
-    } else {
-      if (environment.defaultauth === 'firebase') {
-        this.authenticationService.login(this.f.email.value, this.f.password.value).then((res: any) => {
-          this.router.navigate(['/dashboard']);
-        })
-          .catch(error => {
-            this.error = error ? error : '';
-          });
-      } else {
-        this.authFackservice.login(this.f.email.value, this.f.password.value)
-          .pipe(first())
-          .subscribe(
-            data => {
-              this.router.navigate(['/dashboard']);
-            },
-            error => {
-              this.error = error ? error : '';
-            });
-      }
-    }
+
   }
 }
