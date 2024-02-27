@@ -17,20 +17,22 @@ import { TranslateService } from '@ngx-translate/core';
  */
 export class TopbarComponent implements OnInit {
 
-  element:any;
-  cookieValue:any;
-  flagvalue:any;
-  countryName:any;
-  valueset:any;
+  element: any;
+  cookieValue: any;
+  flagvalue: any;
+  countryName: any;
+  valueset: any;
+  currentUser: any;
 
   constructor(@Inject(DOCUMENT) private document: any, private router: Router,
               private authFackservice: AuthfakeauthenticationService,
               public languageService: LanguageService,
               public translate: TranslateService,
-              public _cookiesService: CookieService) {
+              public _cookiesService: CookieService,
+              private authService: AuthfakeauthenticationService) {
   }
 
-  listLang:any = [
+  listLang: any = [
     { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
     { text: 'Spanish', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
     { text: 'German', flag: 'assets/images/flags/germany.jpg', lang: 'de' },
@@ -46,8 +48,8 @@ export class TopbarComponent implements OnInit {
   ngOnInit() {
     this.openMobileMenu = false;
     this.element = document.documentElement;
-
     this.cookieValue = this._cookiesService.get('lang');
+    this.currentUser = this.authService.currentUserValue;
     const val = this.listLang.filter(x => x.lang === this.cookieValue);
     this.countryName = val.map(element => element.text);
     if (val.length === 0) {
@@ -55,43 +57,32 @@ export class TopbarComponent implements OnInit {
     } else {
       this.flagvalue = val.map(element => element.flag);
     }
+
   }
 
-    setLanguage(text: string, lang: string, flag: string) {
-      this.countryName = text;
-      this.flagvalue = flag;
-      this.cookieValue = lang;
-      this.languageService.setLanguage(lang);
-    }
+  setLanguage(text: string, lang: string, flag: string) {
+    this.countryName = text;
+    this.flagvalue = flag;
+    this.cookieValue = lang;
+    this.languageService.setLanguage(lang);
+  }
 
-  /**
-   * Toggles the right sidebar
-   */
+
   toggleRightSidebar() {
     this.settingsButtonClicked.emit();
   }
 
-  /**
-   * Toggle the menu bar when having mobile screen
-   */
-  toggleMobileMenu(event: any) {
-    event.preventDefault();
+
+  toggleMobileMenu(event: any) { event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
 
-  /**
-   * Logout the user
-   */
   logout() { if (this.authFackservice.currentUserValue) {
-    this.authFackservice.logout(); } else { this.authFackservice.logout();
-  }  this.router.navigate(['/account/login']);
-}
+      this.authFackservice.logout(); } else { this.authFackservice.logout();
+    }  this.router.navigate(['/account/login-2']);
+  }
 
-  /**
-   * Fullscreen method
-   */
-  fullscreen() {
-    document.body.classList.toggle('fullscreen-enable');
+  fullscreen() { document.body.classList.toggle('fullscreen-enable');
     if (
       !document.fullscreenElement && !this.element.mozFullScreenElement &&
       !this.element.webkitFullscreenElement) {

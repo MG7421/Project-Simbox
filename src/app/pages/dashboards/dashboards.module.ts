@@ -17,11 +17,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { SimplebarAngularModule } from 'simplebar-angular';
 
-import { DefaultComponent } from './default/default.component';
 import { SaasComponent } from './saas/saas.component';
 import { CryptoComponent } from './crypto/crypto.component';
 import { BlogComponent } from './blog/blog.component';
 import { JobsComponent } from './jobs/jobs.component';
+import { DefaultComponent } from './default/default.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   declarations: [DefaultComponent, SaasComponent, CryptoComponent, BlogComponent, JobsComponent],
@@ -39,7 +40,9 @@ import { JobsComponent } from './jobs/jobs.component';
     NgApexchartsModule,
     SharedModule,
     SimplebarAngularModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+
   ],
   providers: [BsDropdownConfig],
 })

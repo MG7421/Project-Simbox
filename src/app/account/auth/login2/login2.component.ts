@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
 
-import { OwlOptions } from 'ngx-owl-carousel-o';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { PopupService } from 'src/app/core/services/popup.service';
+import { SteptwoverificationComponent } from 'src/app/extrapages/steptwoverification/steptwoverification.component';
 
 
 @Component({
@@ -15,49 +17,96 @@ import { ActivatedRoute, Router } from '@angular/router';
 /**
  * Login-2 component
  */
+
+
 export class Login2Component implements OnInit {
 
-  constructor(private formBuilder: UntypedFormBuilder, private route: ActivatedRoute, private router: Router,
-    private authFackservice: AuthfakeauthenticationService) { }
-  loginForm: UntypedFormGroup;
-  submitted:any = false;
-  error:any = '';
-  returnUrl: string;
+  loginForm: FormGroup;
+  submitted = false;
+  loading = false;
+  hidePassword = true;
+  error = '';
+  private unsubscribe$: Subject<void> = new Subject<void>();
+year: any;
+carouselOption: any;
 
-  // set the currenr year
-  year: number = new Date().getFullYear();
+  // tslint:disable-next-line: max-line-length
+  constructor(   private formBuilder: FormBuilder,
+    private authService: AuthfakeauthenticationService,
+    private toastr: ToastrService,
+    private popupService: PopupService) { }
 
-  ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
-      email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required]],
-    });
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-  }
-
-  carouselOption: OwlOptions = {
-    items: 1,
-    loop: false,
-    margin: 0,
-    nav: false,
-    dots: true,
-    responsive: {
-      680: {
-        items: 1
-      },
+    ngOnInit() {
+      this.loginForm = this.formBuilder.group({
+        login: ['', Validators.required],
+        password: ['', Validators.required],
+        isLdap: [false, Validators.required]
+      });
     }
-  }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
 
-  /**
-   * Form submit
-   */
-  onSubmit() {
-    this.submitted = true;
+    get f() {
+      return this.loginForm.controls;
+    }
 
-    // stop here if form is invalid
+    togglePasswordVisibility() {
+      this.hidePassword = !this.hidePassword;
+    }
 
-  }
+    onSubmit() {
+      this.submitted = true;
+      if (this.loginForm.invalid || this.loading) {
+        return;
+      }
+
+      const userLogin = this.f['login'].value; // Utilisation de 'login' au lieu de 'email'
+      const userPassword = this.f['password'].value;
+      const isLdap = this.f['isLdap'].value;
+
+      this.loading = true;
+
+      this.authService.login(userLogin, userPassword, isLdap)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(
+          (res: any) => {
+            const modalRef = this.popupService.openComponentDialog(SteptwoverificationComponent);
+            modalRef.result.then( (result) => { if (result === 'verified') { this.handleSuccessfulLogin(res);} },
+            (reason) => { this.showErrorNotification('La vérification à deux étapes a échoué', 'Erreur'); } );
+            this.loading = false; }, (error) => {
+            console.log('error', error);
+            this.submitted = false;
+            this.loading = false;
+            this.handleError(error);
+          }
+        );
+    }
+
+    private handleSuccessfulLogin(res: any) {
+      this.showSuccessNotification(res['status']['message'], 'Succès');
+      // Autres logiques si nécessaire
+      this.loading = false;
+    }
+
+    private showSuccessNotification(message: string, title: string): void {
+      this.toastr.success(message, title);
+    }
+
+    private showErrorNotification(message: string, title: string): void {
+      this.toastr.error(message, title);
+    }
+
+    private handleError(error: any): void {
+      console.error("Une erreur s'est produite", error);
+      let errorMessage = "Une erreur s'est produite. Veuillez réessayer plus tard.";
+      if (error.error && error.error.status && error.error.status.message) {
+        errorMessage = error.error.status.message;
+      }
+      this.showErrorNotification(errorMessage, 'Erreur');
+      this.loading = false;
+    }
+
+    ngOnDestroy() {
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
 }

@@ -29,8 +29,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgOtpInputValueAccessor } from './core/models/ng-otp-input-value-accessor';
 
 
-
-
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -40,7 +38,6 @@ export function createTranslateLoader(http: HttpClient): any {
     AppComponent,
     CyptolandingComponent,
     NgOtpInputValueAccessor,
-
   ],
   imports: [
     BrowserModule,
@@ -63,14 +60,12 @@ export function createTranslateLoader(http: HttpClient): any {
     SharedModule,
     ScrollToModule.forRoot(),
     ToastrModule.forRoot(),
+    // HorizontalTopBarComponent // Remove it from here
   ],
   bootstrap: [AppComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
-    // LoaderService,
-    // { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
   ],
 })
 export class AppModule { }

@@ -1,11 +1,11 @@
 import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
-    {
-        id: 1,
-        label: 'MENUITEMS.MENU.TEXT',
-        isTitle: true
-    },
+    // {
+    //     id: 1,
+    //     label: 'MENUITEMS.MENU.TEXT',
+    //     isTitle: true
+    // },
     {
         id: 2,
         label: 'MENUITEMS.DASHBOARDS.TEXT',
@@ -47,30 +47,30 @@ export const MENU: MenuItem[] = [
         id: 8,
         isLayout: true
     },
-    {
-        id: 9,
-        label: 'MENUITEMS.APPS.TEXT',
-        isTitle: true
-    },
-    {
-        id: 10,
-        label: 'MENUITEMS.CALENDAR.TEXT',
-        icon: 'bx-calendar',
-        link: '/calendar',
-    },
-    {
-        id: 11,
-        label: 'MENUITEMS.CHAT.TEXT',
-        icon: 'bx-chat',
-        link: '/chat',
-        
-    },
-    {
-        id: 12,
-        label: 'MENUITEMS.FILEMANAGER.TEXT',
-        icon: 'bx-file',
-        link: '/filemanager',
-    },
+    // {
+    //     id: 9,
+    //     label: 'MENUITEMS.APPS.TEXT',
+    //     isTitle: true
+    // },
+    // {
+    //     id: 10,
+    //     label: 'MENUITEMS.CALENDAR.TEXT',
+    //     icon: 'bx-calendar',
+    //     link: '/calendar',
+    // },
+    // {
+    //     id: 11,
+    //     label: 'MENUITEMS.CHAT.TEXT',
+    //     icon: 'bx-chat',
+    //     link: '/chat',
+
+    // },
+    // {
+    //     id: 12,
+    //     label: 'MENUITEMS.FILEMANAGER.TEXT',
+    //     icon: 'bx-file',
+    //     link: '/filemanager',
+    // },
     {
         id: 13,
         label: 'MENUITEMS.ECOMMERCE.TEXT',
@@ -205,7 +205,7 @@ export const MENU: MenuItem[] = [
                         id:34,
                         label: 'MENUITEMS.EMAIL.LIST.TEMPLATE.LIST.BASIC',
                         link: '/email/basic',
-                        parentId:30 
+                        parentId:30
                     },
                     {
                         id:35,
@@ -396,7 +396,7 @@ export const MENU: MenuItem[] = [
                         id:64,
                         label: 'MENUITEMS.JOBS.LIST.CANDIDATE.LIST.LIST',
                         link: '/jobs/candidate-list',
-                        parentId:57 
+                        parentId:57
                     },
                     {
                         id:65,
@@ -408,11 +408,11 @@ export const MENU: MenuItem[] = [
             }
         ]
     },
-    {
-        id: 66,
-        label: 'MENUITEMS.PAGES.TEXT',
-        isTitle: true
-    },
+    // {
+    //     id: 66,
+    //     label: 'MENUITEMS.PAGES.TEXT',
+    //     isTitle: true
+    // },
     {
         id: 67,
         label: 'MENUITEMS.AUTHENTICATION.TEXT',
@@ -559,11 +559,11 @@ export const MENU: MenuItem[] = [
             },
         ]
     },
-    {
-        id: 91,
-        label: 'MENUITEMS.COMPONENTS.TEXT',
-        isTitle: true
-    },
+    // {
+    //     id: 91,
+    //     label: 'MENUITEMS.COMPONENTS.TEXT',
+    //     isTitle: true
+    // },
     {
         id: 92,
         label: 'MENUITEMS.UIELEMENTS.TEXT',

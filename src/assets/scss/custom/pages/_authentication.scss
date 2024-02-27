@@ -39,9 +39,9 @@
 // authentication full page
 
 .auth-full-bg{
-    // background-color: rgba($primary, 0.25);
+    background-color: rgba($primary, 0.25);
 
-    background-image: url('../../../images/andeqp.jpg');
+    background-image: url('../../../images/header.png');
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
@@ -59,12 +59,12 @@
         border-radius: 50%;
     }
 
-    .bg-overlay{
-        background: url("../../../images/bg-auth-overlay.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
+    // .bg-overlay{
+    //     background: url("../../../images/bg-auth-overlay.png");
+    //     background-size: cover;
+    //     background-repeat: no-repeat;
+    //     background-position: center;
+    // }
 }
 
 .auth-full-page-content{
